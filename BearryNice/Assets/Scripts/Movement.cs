@@ -65,7 +65,7 @@ public class Movement : MonoBehaviour {
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            Vector3 cameraDirection = Camera.main.transform.TransformDirection(Vector3.forward);
+            Vector3 cameraDirection = Camera.main.transform.TransformDirection(Vector3.back);
             cameraDirection = new Vector3(cameraDirection.x, 0, cameraDirection.z);
             _direction = cameraDirection;
         }
