@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +12,6 @@ public class Movement : MonoBehaviour {
     protected Vector3 _direction;
     [SerializeField]
     protected Rigidbody _rigidBody;
-    private float ADJUST_SPEED = 100;
 
 	// Use this for initialization
 	void Start ()
@@ -39,7 +39,7 @@ public class Movement : MonoBehaviour {
 
     private void Move()
     {
-        _rigidBody.velocity = _direction * _speed * Time.deltaTime * ADJUST_SPEED;
+        _rigidBody.velocity = _direction * _speed * Time.deltaTime * Utils.ADJUST_SPEED;
     }
 
     private void Animate()

@@ -11,9 +11,14 @@ public class TheHunt : MonoBehaviour {
     private BearStates _state;
     [SerializeField]
     private Transform _playerTransform;
+    private Rigidbody _rigidbody;
+    [SerializeField]
+    private static float ATTACK_THRESHOLD = 30f;
+    private float _distractTimer;
 
 	// Use this for initialization
 	void Start () {
+        _rigidbody = GetComponent<Rigidbody>();
         if(_speed == 0)
         {
             _speed = 10f;
@@ -21,24 +26,55 @@ public class TheHunt : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        switch(_state)
+	void FixedUpdate () {
+        bool isCloseEnoughToAttack = false;
+        bool isDistracted = false;
+        switch (_state)
         {
             case BearStates.SEARCH:
-                
+                Move();
+                isCloseEnoughToAttack = BearCanAttack();
+                isDistracted = BearIsDistracted();
                 break;
             case BearStates.ATTACK:
+                Attack();
+                isCloseEnoughToAttack = BearCanAttack();
+                isDistracted = BearIsDistracted();
                 break;
             case BearStates.DISTRACT:
+                if(Time.realtimeSinceStartup - _distractTimer > 0)
+                {
+                    // here we set the bear back to search
+                    isCloseEnoughToAttack = false;
+                    isDistracted = false;
+                }
                 break;
         }
-        Move();
+        _state = isCloseEnoughToAttack ? BearStates.ATTACK : BearStates.SEARCH;
+        _state = isDistracted ? BearStates.DISTRACT : BearStates.SEARCH;
 	}
 
-    void Move()
+    private void Move()
     {
-        transform.position += transform.forward * _speed * Time.deltaTime;
-        transform.LookAt(_target);
+        transform.LookAt(_target);        
+        _rigidbody.velocity = transform.forward * _speed * Time.deltaTime * Utils.ADJUST_SPEED;
+    }
+
+    private void Attack()
+    {
+        
+    }
+
+    private bool BearIsDistracted()
+    {
+        return false;
+    }
+
+    private bool BearCanAttack()
+    {
+        bool res = CircleSpawner.DistanceIsLessThanThreshold(_rigidbody.position, _playerTransform.position, ATTACK_THRESHOLD);
+        if (res) { Debug.Log("Bear is switching to ATTACK"); }
+        return res;
     }
 
     private void OnTriggerEnter(Collider other)

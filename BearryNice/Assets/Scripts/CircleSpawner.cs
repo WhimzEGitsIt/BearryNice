@@ -24,9 +24,9 @@ public class CircleSpawner : MonoBehaviour {
     private float MAX_RADIUS = 1000f;
 
     private int _frameCounter = 0;
-    private int FRAME_DELAY = 120;
+    private static int FRAME_DELAY = 120;
 
-    private float DISTANCE_THRESHOLD = 3f;
+    private static float DISTANCE_THRESHOLD = 3f;
 
     public Vector3 _bearTarget
     {
@@ -49,33 +49,19 @@ public class CircleSpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        bool playerLeftCircle = CheckPointOutsideCircle(_player.transform.position);
+        bool playerLeftCircle = CheckPointOutsideCircle(_player.transform.position, _center, _radius);
         if(playerLeftCircle || _frameCounter++ % FRAME_DELAY == 0)
         {
             _frameCounter = 0;
             SetCircle();
         }
-        bool bearReachedTarget = CheckBearReachedTarget();
+        bool bearReachedTarget = DistanceIsLessThanThreshold(_bear.transform.position, _center, DISTANCE_THRESHOLD);
         if (bearReachedTarget)
         {
             Debug.Log("Bear reached target. Setting new target");
             _hunt.ChangeTarget(_bearTarget);
         }
 	}
-
-    bool CheckPointOutsideCircle(Vector3 position)
-    {
-        var dX = Mathf.Abs(position.x - _center.x);
-        var dY = Mathf.Abs(position.z - _center.z);
-        return (dX * dX) + (dY * dY) > (_radius * _radius);
-    }
-
-    bool CheckBearReachedTarget()
-    {
-        var dX = Mathf.Abs(_bear.transform.position.x - _center.x);
-        var dY = Mathf.Abs(_bear.transform.position.z - _center.z);
-        return (dX * dX) + (dY * dY) < DISTANCE_THRESHOLD;
-    }
 
     void SetCircle()
     {
@@ -86,9 +72,23 @@ public class CircleSpawner : MonoBehaviour {
         _radius = _radius > MAX_RADIUS ? MAX_RADIUS : _radius;
         transform.localScale = new Vector3(_radius, 0, _radius);
         transform.position = _center;
-        if(CheckPointOutsideCircle(_hunt.GetTarget()))
+        if(CheckPointOutsideCircle(_hunt.GetTarget(), _center, _radius))
         {
             _hunt.ChangeTarget(_bearTarget);
         }
+    }
+
+    public static bool DistanceIsLessThanThreshold(Vector3 one, Vector3 two, float threshold)
+    {
+        var dX = Mathf.Abs(one.x - two.x);
+        var dY = Mathf.Abs(one.z - two.z);
+        return (dX * dX) + (dY * dY) < threshold;
+    }
+
+    public static bool CheckPointOutsideCircle(Vector3 position, Vector3 center, float radius)
+    {
+        var dX = Mathf.Abs(position.x - center.x);
+        var dY = Mathf.Abs(position.z - center.z);
+        return (dX * dX) + (dY * dY) > (radius * radius);
     }
 }
