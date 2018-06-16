@@ -55,7 +55,7 @@ public class CircleSpawner : MonoBehaviour {
             _frameCounter = 0;
             SetCircle();
         }
-        bool bearReachedTarget = DistanceIsLessThanThreshold(_bear.transform.position, _center, DISTANCE_THRESHOLD);
+        bool bearReachedTarget = DistanceIsLessThanThreshold(_bear.transform.position, _hunt.GetTarget(), DISTANCE_THRESHOLD);
         if (bearReachedTarget)
         {
             Debug.Log("Bear reached target. Setting new target");
@@ -82,7 +82,7 @@ public class CircleSpawner : MonoBehaviour {
     {
         var dX = Mathf.Abs(one.x - two.x);
         var dY = Mathf.Abs(one.z - two.z);
-        return (dX * dX) + (dY * dY) < threshold;
+        return (dX * dX) + (dY * dY) <= threshold;
     }
 
     public static bool CheckPointOutsideCircle(Vector3 position, Vector3 center, float radius)

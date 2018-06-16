@@ -62,7 +62,8 @@ public class TheHunt : MonoBehaviour {
 
     private void Attack()
     {
-        
+        transform.LookAt(_playerTransform);
+        _rigidbody.velocity = transform.forward * _speed * Time.deltaTime * Utils.ADJUST_SPEED;
     }
 
     private bool BearIsDistracted()
