@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TheHunt : MonoBehaviour {
 
@@ -83,7 +84,8 @@ public class TheHunt : MonoBehaviour {
         if (other.gameObject.name.Equals("Player"))
         {
             Debug.Log("Eating player. NOM NOM NOM.");
-            Destroy(other.gameObject);
+            SceneManager.LoadScene("MainMenu"); 
+            //Destroy(other.gameObject);
         }
     }
     
