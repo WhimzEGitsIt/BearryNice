@@ -49,18 +49,24 @@ public class CircleSpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        bool playerLeftCircle = CheckPlayerPosition();
+        bool playerLeftCircle = CheckPointOutsideCircle(_player.transform.position);
         if(playerLeftCircle || _frameCounter++ % FRAME_DELAY == 0)
         {
+            _frameCounter = 0;
             SetCircle();
         }
         bool bearReachedTarget = CheckBearReachedTarget();
+        if (bearReachedTarget)
+        {
+            Debug.Log("Bear reached target. Setting new target");
+            _hunt.ChangeTarget(_bearTarget);
+        }
 	}
 
-    bool CheckPlayerPosition()
+    bool CheckPointOutsideCircle(Vector3 position)
     {
-        var dX = Mathf.Abs(_player.transform.position.x - _center.x);
-        var dY = Mathf.Abs(_player.transform.position.z - _center.z);
+        var dX = Mathf.Abs(position.x - _center.x);
+        var dY = Mathf.Abs(position.z - _center.z);
         return (dX * dX) + (dY * dY) > (_radius * _radius);
     }
 
@@ -80,6 +86,9 @@ public class CircleSpawner : MonoBehaviour {
         _radius = _radius > MAX_RADIUS ? MAX_RADIUS : _radius;
         transform.localScale = new Vector3(_radius, 0, _radius);
         transform.position = _center;
-        _hunt.SetTarget(_bearTarget);
+        if(CheckPointOutsideCircle(_hunt.GetTarget()))
+        {
+            _hunt.ChangeTarget(_bearTarget);
+        }
     }
 }

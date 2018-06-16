@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ public class TheHunt : MonoBehaviour {
     private Vector3 _target;
     [SerializeField]
     private float _speed;
+    private BearStates _state;
+    [SerializeField]
+    private Transform _playerTransform;
 
 	// Use this for initialization
 	void Start () {
@@ -18,13 +22,23 @@ public class TheHunt : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        switch(_state)
+        {
+            case BearStates.SEARCH:
+                
+                break;
+            case BearStates.ATTACK:
+                break;
+            case BearStates.DISTRACT:
+                break;
+        }
         Move();
 	}
 
     void Move()
     {
-        transform.LookAt(_target);
         transform.position += transform.forward * _speed * Time.deltaTime;
+        transform.LookAt(_target);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -35,9 +49,15 @@ public class TheHunt : MonoBehaviour {
             Destroy(other.gameObject);
         }
     }
-
-    public void SetTarget(Vector3 newTarget)
+    
+    public Vector3 GetTarget()
     {
+        return _target;
+    }
+
+    public void ChangeTarget(Vector3 newTarget)
+    {
+        Debug.Log("Changing bear target " + Time.realtimeSinceStartup);
         _target = new Vector3(newTarget.x, 0, newTarget.z);
     }
 }
