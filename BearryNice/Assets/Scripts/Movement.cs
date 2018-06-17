@@ -53,6 +53,7 @@ public class Movement : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
+            Debug.Log("Handling input... W or Up pressed.");
             Vector3 cameraDirection = Camera.main.transform.TransformDirection(Vector3.forward);
             cameraDirection = new Vector3(cameraDirection.x, 0, cameraDirection.z);
             _direction = cameraDirection;
